@@ -2,7 +2,9 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-REQUIRE = $(shell echo '$(subst require-,,$@)' | tr '[:lower:]' '[:upper:]')
+REQUIRE = $(shell echo '$*' | tr '[:lower:]' '[:upper:]')
+
+EXISTING?=a
 
 ##: ## Set VERBOSE=1 to echo commands while running
 
@@ -12,8 +14,11 @@ help: ## List targets & descriptions
 example: require-example ## Recipe that requires a variable to be passed in 
 	echo "${EXAMPLE}"
 
+existing: require-existing ## Recipe requiring an existing variable
+	echo "$(EXISTING)"
+
 require-%:
-	if [ -z $${${REQUIRE}+x} ]; then \
+	if [ -z $${${REQUIRE}+x} ] && [ -z ${${REQUIRE}} ]; then \
 		echo "${REQUIRE} is undefined"; \
 		exit 1; \
 	fi
